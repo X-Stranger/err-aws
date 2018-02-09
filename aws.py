@@ -1,12 +1,8 @@
 from errbot import BotPlugin, botcmd
-from optparse import OptionParser
 
 from libcloud.compute.types import Provider, NodeState
 from libcloud.compute.providers import get_driver
-from libcloud.compute.base import NodeImage
-from libcloud.compute.drivers.ec2 import EC2SubnetAssociation
 
-import time
 import logging
 logging.basicConfig(level=logging.DEBUG)
 
