@@ -51,7 +51,7 @@ class AWS(BotPlugin):
 
         return details
 
-    @botcmd
+    @botcmd(split_args_with=' ')
     def aws_info(self, msg, args):
         ''' get details of a virtual machine
             options: name
