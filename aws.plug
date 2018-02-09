@@ -3,7 +3,7 @@ Name = AWS
 Module = aws
 
 [Python]
-Version=3+
+Version=3
 
 [Documentation]
 Description = AWS plugin to manage virtual machines in Amazon AWS
