@@ -4,6 +4,7 @@ from libcloud.compute.types import Provider, NodeState
 from libcloud.compute.providers import get_driver
 
 import os
+from itertools import chain
 import logging
 logging.basicConfig(level=logging.DEBUG)
 
@@ -17,6 +18,14 @@ class AWS(BotPlugin):
             'region': os.environ['REGION'] if 'REGION' in os.environ else None
         }
         return config
+
+    def configure(self, configuration):
+        if configuration is not None and configuration != {}:
+            config = dict(chain(self.get_configuration_template().items(), configuration.items()))
+        else:
+            config = self.get_configuration_template()
+        super(AWS, self).configure(config)
+        return
 
     def _connect(self):
         """ connection to aws """
