@@ -3,6 +3,7 @@ from errbot import BotPlugin, botcmd
 from libcloud.compute.types import Provider, NodeState
 from libcloud.compute.providers import get_driver
 
+import os
 import logging
 logging.basicConfig(level=logging.DEBUG)
 
@@ -11,9 +12,9 @@ class AWS(BotPlugin):
     def get_configuration_template(self):
         """ configuration entries """
         config = {
-            'access_id': None,
-            'secret_key': None,
-            'region': None
+            'access_id': os.environ['AWS_ACCESS_KEY_ID'] if 'AWS_ACCESS_KEY_ID' in os.environ else None,
+            'secret_key': os.environ['AWS_SECRET_ACCESS_KEY'] if 'AWS_SECRET_ACCESS_KEY' in os.environ else None,
+            'region': os.environ['REGION'] if 'REGION' in os.environ else None
         }
         return config
 
