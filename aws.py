@@ -33,6 +33,25 @@ class AWS(BotPlugin):
             if instance.name == name:
                 return instance
 
+    def _list_grids(self):
+        driver = self._connect()
+        grids = list()
+        for net in driver.ex_list_networks():
+            if 'Stack-Name' in net.extra['tags']:
+                grids.append(net.extra['tags']['Stack-Name'])
+        grids.sort()
+        return grids
+
+    def _list_active_grids(self):
+        driver = self._connect()
+        grids = dict()
+        for node in driver.list_nodes():
+            if node.name.endswith("mesos-master"):
+                grids[node.name] = node.extra['tags']['Stack-Name']
+        values = list(grids.values())
+        values.sort()
+        return values
+
     def _basic_instance_details(self, name):
         instance = self._find_instance_by_name(name)
 
@@ -50,6 +69,44 @@ class AWS(BotPlugin):
             details = {'error': 'instance named {0} not found.'.format(name)}
 
         return details
+
+    @botcmd
+    def aws_list_grids(self, msg, args):
+        ''' get list of all grids
+            example:
+            !aws list_grids
+        '''
+        grids = self._list_grids()
+        sorted = ""
+        for grid in grids:
+            sorted += grid + "\n"
+        self.send(msg.frm, sorted)
+
+    @botcmd
+    def aws_list_active_grids(self, msg, args):
+        ''' get list of active grids
+            example:
+            !aws list_active_grids
+        '''
+        grids = self._list_active_grids()
+        sorted = ""
+        for grid in grids:
+            sorted += grid + "\n"
+        self.send(msg.frm, sorted)
+
+    @botcmd
+    def aws_list_inactive_grids(self, msg, args):
+        ''' get list of inactive grids
+            example:
+            !aws list_inactive_grids
+        '''
+        grids_all = self._list_grids()
+        grids_active = self._list_active_grids()
+        grids_inactive = list(set(grids_all) - set(grids_active))
+        sorted = ""
+        for grid in grids_inactive:
+            sorted += grid + "\n"
+        self.send(msg.frm, sorted)
 
     @botcmd(split_args_with=' ')
     def aws_info(self, msg, args):
