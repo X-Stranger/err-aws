@@ -87,9 +87,10 @@ class AWS(BotPlugin):
             !aws list_grids
         '''
         grids = self._list_grids()
-        sorted = ""
+        sorted = "\`\`\`\n"
         for grid in grids:
             sorted += grid + "\n"
+        sorted += "\`\`\`"
         self.send(msg.frm, sorted)
 
     @botcmd
@@ -99,9 +100,10 @@ class AWS(BotPlugin):
             !aws list_active_grids
         '''
         grids = self._list_active_grids()
-        sorted = ""
+        sorted = "\`\`\`\n"
         for grid in grids:
             sorted += grid + "\n"
+        sorted += "\`\`\`"
         self.send(msg.frm, sorted)
 
     @botcmd
@@ -113,9 +115,10 @@ class AWS(BotPlugin):
         grids_all = self._list_grids()
         grids_active = self._list_active_grids()
         grids_inactive = list(set(grids_all) - set(grids_active))
-        sorted = ""
+        sorted = "\`\`\`\n"
         for grid in grids_inactive:
             sorted += grid + "\n"
+        sorted += "\`\`\`"
         self.send(msg.frm, sorted)
 
     @botcmd(split_args_with=' ')
