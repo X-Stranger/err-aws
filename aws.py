@@ -76,7 +76,7 @@ class AWS(BotPlugin):
                 'instance_type': instance.extra['instance_type'],
             }
         else:
-            details = {'error': 'instance named {0} not found.'.format(name)}
+            details = '```Error - instance named {0} not found.```'.format(name)
 
         return details
 
@@ -87,11 +87,13 @@ class AWS(BotPlugin):
             !aws list_grids
         '''
         grids = self._list_grids()
-        sorted = "\`\`\`\n"
+        sorted = ""
         for grid in grids:
             sorted += grid + "\n"
-        sorted += "\`\`\`"
-        self.send(msg.frm, sorted)
+        self.send_card(title='All Grids',
+                          color='yellow',
+                          body=sorted,
+                          in_reply_to=msg)
 
     @botcmd
     def aws_list_active_grids(self, msg, args):
@@ -100,11 +102,13 @@ class AWS(BotPlugin):
             !aws list_active_grids
         '''
         grids = self._list_active_grids()
-        sorted = "\`\`\`\n"
+        sorted = ""
         for grid in grids:
             sorted += grid + "\n"
-        sorted += "\`\`\`"
-        self.send(msg.frm, sorted)
+        self.send_card(title='Active Grids',
+                          color='green',
+                          body=sorted,
+                          in_reply_to=msg)
 
     @botcmd
     def aws_list_inactive_grids(self, msg, args):
@@ -115,11 +119,13 @@ class AWS(BotPlugin):
         grids_all = self._list_grids()
         grids_active = self._list_active_grids()
         grids_inactive = list(set(grids_all) - set(grids_active))
-        sorted = "\`\`\`\n"
+        sorted = ""
         for grid in grids_inactive:
             sorted += grid + "\n"
-        sorted += "\`\`\`"
-        self.send(msg.frm, sorted)
+        self.send_card(title='Inactive Grids',
+                          color='red',
+                          body=sorted,
+                          in_reply_to=msg)
 
     @botcmd(split_args_with=' ')
     def aws_info(self, msg, args):
@@ -130,7 +136,7 @@ class AWS(BotPlugin):
         '''
         vmname = args.pop(0)
         details = self._basic_instance_details(vmname)
-        self.send(msg.frm, '{0}: {1}'.format(vmname, details))
+        yield details
 
     @botcmd
     def aws_reboot(self, msg, args):
@@ -147,7 +153,7 @@ class AWS(BotPlugin):
         else:
             response = 'Unable to complete request.'
 
-        self.send(msg.frm, '{0}: {1}'.format(vm.name, response))
+        yield '```{0}: {1}```'.format(vm.name, response)
 
 
     @botcmd
@@ -165,4 +171,4 @@ class AWS(BotPlugin):
         else:
             response = 'Unable to complete request.'
 
-        self.send(msg.frm, '{0}: {1}'.format(vm.name, response))
+        yield '```{0}: {1}```'.format(vm.name, response)
